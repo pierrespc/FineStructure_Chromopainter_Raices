@@ -4,7 +4,8 @@ use strict;
 use warnings;
 use Cwd;
 
-my $usage = "runShapeIT_Prephase.pl <FolderBEDFIle> <PlinkBEDFile> <MissingInd> <MissingSNP> <MAF> <mapFile> <refHaps> <legendFile> <sampleFile> <FolderOut> <states> <WindowSize> <thread> <prune> <main> <effSize>
+my $usage = "runShapeIT_Prephase.pl <FolderBEDFIle> <PlinkBEDFile> <MissingInd> <MissingSNP> <MAF> <mapFile> <refHaps> <legendFile> <sampleFile> <FolderOut> <states> <WindowSize> <thread> <prune> <main> <effSize> <commandPlink> <commandShapeit>
+
 
 BE CAREFULL WORK FOR ONE UNIQUE CHR
 
@@ -25,6 +26,8 @@ burn: number of iterations to burn (--burn option; default is 7)
 prune: number of iterations to prune (--prune option; default is 8)
 main: number of main iterations (--main option; default is 7)
 effSize: effective pop size (--effective-size; default is 15000)
+commandPlink: a string with the command to run plink 
+commandShapeit: a string with the command to ruin shapeit
 \n";
 
 
@@ -62,7 +65,10 @@ my $main = shift or die $usage."\n\nMISSING main\n";;
 print "main: :".$main."\n";
 my $effSize=shift or die $usage."\n\nMISSING effSize\n";;
 print "effSize: :".$effSize."\n";
-
+my $commandPlink=shift or die $usage."\n\nMISSING commandPlink\n";;
+print "commandPlink: :".$commandPlink."\n";
+my $commandShapeit=shift or die $usage."\n\nMISSING commandShapeit\n";;
+print "commandShapeit: :".$commandShapeit."\n";
 
 print "PROCESS CHECKING between reference ane studied set\n";
 my $inPhase;
@@ -99,7 +105,7 @@ if(! -e $FolderOut."/".$PlinkBEDFile.".alignments.snp.strand"){
 	system("sort ".$FolderOut."/".$PlinkBEDFile.".alignments.snp.strand.exclude | uniq > ".$FolderOut."/".$PlinkBEDFile.".alignments.snp.strand.exclude.tmp");
 	system("mv ".$FolderOut."/".$PlinkBEDFile.".alignments.snp.strand.exclude.tmp ".$FolderOut."/".$PlinkBEDFile.".alignments.snp.strand.exclude");
 
-	system("~/src/plink1.9/plink --bfile ".$FolderBEDFile."/".$PlinkBEDFile." --exclude ".$FolderOut."/".$PlinkBEDFile.".alignments.snp.strand.exclude --maf ".$MAF." --geno ".$MissingSNP." --mind ".$MissingInd." --make-bed --out ".$FolderOut."/".$PlinkBEDFile."_alignedRef --noweb");
+	system("$commandPlink --bfile ".$FolderBEDFile."/".$PlinkBEDFile." --exclude ".$FolderOut."/".$PlinkBEDFile.".alignments.snp.strand.exclude --maf ".$MAF." --geno ".$MissingSNP." --mind ".$MissingInd." --make-bed --out ".$FolderOut."/".$PlinkBEDFile."_alignedRef --noweb");
 
 	#system("rm ".$FolderOut."/".$PlinkBEDFile.".alignments.snp.strand");
 	#system("rm ".$FolderOut."/".$PlinkBEDFile.".alignments.snp.strand.exclude");
