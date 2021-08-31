@@ -14,9 +14,9 @@ module load singularity
 module load java
 
 
-rootRef=/Volumes/MARIOLOLO/Data/1KG_Haplotypes/Phase3/
+rootRef=/pasteur/zeus/projets/p02/Hotpaleo/common_data/db/ref_datasets/Human/1000GP_Phase3/
 
-folderScript=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Scripts/RAICES/
+folderScripts=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Scripts/RAICES/
 folder=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Projects/RAICES/
 folderIN=$folder/StartFilteredData/
 
@@ -48,7 +48,7 @@ do
 	if [ ! -e $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr"_alignedRef_phased.haps" ]
 	then
 		$commandPlink plink1.9 --bfile $folderIN/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED --chr $chr --maf $MAF --geno $GENO --mind $MIND --make-bed --out $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr
-		perl $folderScript/1_runShapeIT.pl $folder/shapeITphased Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr $MIND $GENO $MAF $rootRef/genetic_map_chr$chr"_combined_b37.txt" $rootRef/1000GP_Phase3_chr$chr".hap.gz" $rootRef/1000GP_Phase3_chr$chr".legend.gz" $rootRef/1000GP_Phase3.sample $folder/shapeITphased $state $window $thread $burn $prune $main $effSize "$commandPlink" "$commandShapeit"
+		perl $folderScripts/1_runShapeIT.pl $folder/shapeITphased Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr $MIND $GENO $MAF $rootRef/genetic_map_chr$chr"_combined_b37.txt" $rootRef/1000GP_Phase3_chr$chr".hap.gz" $rootRef/1000GP_Phase3_chr$chr".legend.gz" $rootRef/1000GP_Phase3.sample $folder/shapeITphased $state $window $thread $burn $prune $main $effSize "$commandPlink" "$commandShapeit" $folderScripts
 	else
 		echo $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr"_alignedRef_phased.haps" already generated
 	fi

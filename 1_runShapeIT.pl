@@ -1,10 +1,10 @@
-#!/aplic/perl/bin/perl
+#!/bin/perl
 
 use strict;
 use warnings;
 use Cwd;
 
-my $usage = "runShapeIT_Prephase.pl <FolderBEDFIle> <PlinkBEDFile> <MissingInd> <MissingSNP> <MAF> <mapFile> <refHaps> <legendFile> <sampleFile> <FolderOut> <states> <WindowSize> <thread> <prune> <main> <effSize> <commandPlink> <commandShapeit>
+my $usage = "runShapeIT_Prephase.pl <FolderBEDFIle> <PlinkBEDFile> <MissingInd> <MissingSNP> <MAF> <mapFile> <refHaps> <legendFile> <sampleFile> <FolderOut> <states> <WindowSize> <thread> <prune> <main> <effSize> <commandPlink> <commandShapeit> <folderScripts>
 
 
 BE CAREFULL WORK FOR ONE UNIQUE CHR
@@ -28,6 +28,7 @@ main: number of main iterations (--main option; default is 7)
 effSize: effective pop size (--effective-size; default is 15000)
 commandPlink: a string with the command to run plink 
 commandShapeit: a string with the command to ruin shapeit
+folderScripts: folder with the Flipping script
 \n";
 
 
@@ -69,11 +70,13 @@ my $commandPlink=shift or die $usage."\n\nMISSING commandPlink\n";;
 print "commandPlink: :".$commandPlink."\n";
 my $commandShapeit=shift or die $usage."\n\nMISSING commandShapeit\n";;
 print "commandShapeit: :".$commandShapeit."\n";
+my $folderScripts=shift or die $usage."\n\nMISSING folderScripts\n";;
+print "folderScrips: :".$folderScripts."\n";
 
 print "PROCESS CHECKING between reference ane studied set\n";
 my $inPhase;
 if(! -e $FolderOut."/".$PlinkBEDFile.".alignments.snp.strand"){
-    system("/Users/pierrespc/Documents/PostDoc/scripts/Tools/shapeIT/shapeit.v2.r790.MacOSX/shapeit\\
+    system($commandShapeit."\\
      -check\\
      -B ".$FolderBEDFile."/".$PlinkBEDFile."\\
      -M ".$mapFile."\\
@@ -91,7 +94,7 @@ if(! -e $FolderOut."/".$PlinkBEDFile.".alignments.snp.strand"){
 	
 }else{
 	print "\nFLIP STRAND\n";
-	system("perl /Users/pierrespc/Documents/PostDoc/scripts/Tools/shapeIT/Prephase/Flip_accordingTolegend.pl ".$FolderOut."/".$PlinkBEDFile.".alignments.snp.strand ".$FolderBEDFile."/".$PlinkBEDFile.".bim");
+	system("perl ".$folderScripts."1a_Flip_accordingTolegend.pl ".$FolderOut."/".$PlinkBEDFile.".alignments.snp.strand ".$FolderBEDFile."/".$PlinkBEDFile.".bim");
 	#if( -e $FolderOut."/".$PlinkBEDFile.".alignments.snp.strand.DuplicatedNames" ){
 	#	print "check positions in ".$FolderOut."/".$PlinkBEDFile."\n\n It seems that you have duplicated name\n\n";
 	#	print "press ENTER to keep on\n";
@@ -111,7 +114,7 @@ if(! -e $FolderOut."/".$PlinkBEDFile.".alignments.snp.strand"){
 	#system("rm ".$FolderOut."/".$PlinkBEDFile.".alignments.snp.strand.exclude");
 
 	print "PROCESS 2nd CHECKING between reference ane studied set\n";
-	system("/Users/pierrespc/Documents/PostDoc/scripts/Tools/shapeIT/shapeit.v2.r790.MacOSX/shapeit -check -B ".$FolderOut."/".$PlinkBEDFile."_alignedRef -M ".$mapFile." -R ".$refHaps." ".$legendFile." ".$sampleFile." --output-log ".$FolderOut."/".$PlinkBEDFile.".2ndAlignments");
+	system($commandShapeit." -check -B ".$FolderOut."/".$PlinkBEDFile."_alignedRef -M ".$mapFile." -R ".$refHaps." ".$legendFile." ".$sampleFile." --output-log ".$FolderOut."/".$PlinkBEDFile.".2ndAlignments");
 
 	if( -s $FolderOut."/".$PlinkBEDFile.".2ndAlignments.snp.strand"){
 	    print "your file seems to have a problem we couldn0t solve...We removed the corresponding SNPs. check the files:\n -".$FolderOut."/".$PlinkBEDFile.".2ndAlignments.snp.strand\n\n";
@@ -127,8 +130,8 @@ if(! -e $FolderOut."/".$PlinkBEDFile.".alignments.snp.strand"){
 }
 print "RUN PREPHASING\n";
 
-system("/Users/pierrespc/Documents/PostDoc/scripts/Tools/shapeIT/shapeit.v2.r790.MacOSX/shapeit\\
-     -B ".$inPhase."\\
+system($commandShapeit."\\
+    -B ".$inPhase."\\
      -M ".$mapFile."\\
       --input-ref ".$refHaps."\\
      ".$legendFile."\\
