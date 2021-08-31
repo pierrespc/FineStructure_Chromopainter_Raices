@@ -1,9 +1,10 @@
 #/aplic/R/bin/R
 
-usage = "Rscript putGenMap_inMapFile.R  <MANY_1> <mapFileIn> <bim> <MANY_2> <GenMapIn> <mapFileOut>
+usage = "Rscript putGenMap_inMapFile.R  <MANY_1> <mapFileIn> <suff> <bim> <MANY_2> <GenMapIn> <mapFileOut>
 With
 <MANY_1> T if you splitted the plink map files for each chrom or F if all in one unique file
 <mapFileIn> the plink map file (if <MANY_1> is T) or prefixe (if <MANY_1> is F and then your map files must be <prefixe>1.map <prefixe>2.map etc...)
+<suff>: suffix for map files
 <bim> if map file is bim or not
 <MANY_2> T if you splitted the genetic map files for each chrom or F if all in one unique file
 <GenMapIn> the genetic  map file. as provided by Hapmap (if <MANY_2> is T) or prefixe (if <MANY_2> is F and then your map files must be <prefixe>1.txt <prefixe>2.txt etc...)
@@ -13,7 +14,7 @@ With
 
 parameters <- commandArgs(trailingOnly=T)
 
-if (length(parameters) == 7){
+if (length(parameters) == 8){
 	MANY_1 <- parameters[1]
 	if(MANY_1 == "F"){
 		MANY_1=FALSE
@@ -26,7 +27,8 @@ if (length(parameters) == 7){
 	}	
 	
 	mapFileIn<-parameters[2]
-    BIM<-parameters[3]
+    suff<-parameters[3]
+    BIM<-parameters[4]
     if(BIM == "F"){
         BIM=FALSE
         suffMap="map"
@@ -38,7 +40,7 @@ if (length(parameters) == 7){
             stop("<bim> must be T or F check usage\n")
         }
     }
-	MANY_2 <- parameters[4]
+	MANY_2 <- parameters[5]
 	if(MANY_2 == "F"){
 		MANY_2=FALSE
 	}else{
@@ -48,12 +50,12 @@ if (length(parameters) == 7){
 			stop("<MANY_2> must be T or F check usage\n")
 		}
 	}	
-	GenMapIn<-parameters[5]
-    column=as.numeric(parameters[6])
+	GenMapIn<-parameters[6]
+    column=as.numeric(parameters[7])
     if(is.na(column)){
             stop("<colInGentMap> must be numeric")
     }
-	mapFileOut<-parameters[7]
+	mapFileOut<-parameters[8]
 
 }else{
 	stop(usage)
@@ -85,8 +87,8 @@ for(chr in listCHR){
 		MapCHR<-MapGW[MapGW$V1==chr,]
 	}else{
 		#MapCHR<-read.table(paste(mapFileIn,chr,".phased",suffMap,sep=""),stringsAsFactors=F,header=F)
-		MapCHR<-read.table(paste(mapFileIn,chr,"_alignedRef.",suffMap,sep=""),stringsAsFactors=F,header=F)
-		print(paste(mapFileIn,chr,suffMap," has been read",sep=""))
+		MapCHR<-read.table(paste(mapFileIn,chr,suff,".",suffMap,sep=""),stringsAsFactors=F,header=F)
+		print(paste(mapFileIn,chr,suff,".",suffMap," has been read",sep=""))
 	}
 	if(dim(MapCHR)[1]==0){
 		next
@@ -97,8 +99,8 @@ for(chr in listCHR){
             outGW<-rbind(outGW,MapCHR)
         }else{
             #write.table(MapCHR,paste(mapFileOut,chr,".phased",suffMap,sep=""),quote=F,row.names=F,col.names=F)
-	write.table(MapCHR,paste(mapFileOut,chr,"_alignedRef.",suffMap,sep=""),quote=F,row.names=F,col.names=F)
-            print(paste(mapFileOut,chr,suffMap," has been written",sep=""))
+	write.table(MapCHR,paste(mapFileOut,chr,suff,".",suffMap,sep=""),quote=F,row.names=F,col.names=F)
+            print(paste(mapFileOut,chr,suff,".",suffMap," has been written",sep=""))
         }
         next
     }
@@ -121,8 +123,8 @@ for(chr in listCHR){
 		outGW<-rbind(outGW,MapCHR)
 	}else{
 		#write.table(MapCHR,paste(mapFileOut,chr,"phased",suffMap,sep=""),quote=F,row.names=F,col.names=F)
-		write.table(MapCHR,paste(mapFileOut,chr,"_alignedRef.",suffMap,sep=""),quote=F,row.names=F,col.names=F)
-		print(paste(mapFileOut,chr,suffMap," has been written",sep=""))
+		write.table(MapCHR,paste(mapFileOut,chr,suff,".",suffMap,sep=""),quote=F,row.names=F,col.names=F)
+		print(paste(mapFileOut,chr,suff,".",suffMap," has been written",sep=""))
 	}
 }
 
