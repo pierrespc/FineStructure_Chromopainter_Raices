@@ -6,8 +6,10 @@ SinguExec="singularity exec --home $HOME:/home/$USER --bind /pasteur "
 folderImg=/pasteur/zeus/projets/p02/Hotpaleo/common_data/VMs/singularity/
 fsImage=$folderImg/evolbioinfo-finestructure-v4.1.1.img
 
+folderScripts=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Scripts/RAICES/
 
-commandConvert="$SinguExec $fsImage perl impute2chromopainter.pl"
+#commandConvert="$SinguExec $fsImage perl impute2chromopainter.pl"
+commandConvert="perl $folderScripts/2b_impute2chromopainter.pl"
 commandFs="$SinguExec $fsImage fs"
 module load singularity
 module load java
@@ -15,7 +17,6 @@ module load java
 
 rootRef=/pasteur/zeus/projets/p02/Hotpaleo/common_data/db/ref_datasets/Human/1000GP_Phase3/
 
-folderScripts=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Scripts/RAICES/
 
 folder=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Projects/RAICES/
 cd $folder 
@@ -28,6 +29,7 @@ a=$(ls  shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF
 echo $a
 if [ $a -ne 22 ]
 then
+	echo "not 22 chr with alignedRef"
 	a=$(ls  shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr{1..22}.bim | wc -l)
 	if [ $a -eq 22 ]
 	then
@@ -74,22 +76,21 @@ if [ $a != 22 ]
 then
 	Rscript $folderScripts/2a_putGenMap_inMapFile.R \
 		T \
-		$suff \
 		shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr \
+		$suff \
 		T \
 		T \
 		$rootRef/genetic_map_chr \
-		6 \
+		3 \
 		shapeITphased/withCM.Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr
 else
 	echo cM ok!
 fi
-exit
 for chr in {1..22}
 do
 	echo $chr
-	echo "start.pos recom.rate.perbp" > fineStructure/chr$chr.recomb
-	awk 'BEGIN{prevCM=0;prevBP=0} {rate=($3-prevCM)/($4-prevBP); print $4,rate; prevCM=$3; prevBP=$4}' shapeITphased/withCM.Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$chr"_alignedRef.bim" >> fineStructure/Inputs/chr$chr.recomb
+	echo "start.pos recom.rate.perbp" > fineStructure/Inputs/chr$chr.recomb
+	awk 'BEGIN{prevCM=0;prevBP=0} {rate=($3-prevCM)/($4-prevBP); print $4,rate; prevCM=$3; prevBP=$4}' shapeITphased/withCM.Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$chr$suff.bim >> fineStructure/Inputs/chr$chr.recomb
 	if [  ! -s fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$chr"_alignedRef_phased.phase" ]
         then
                 $commandConvert \
@@ -98,6 +99,7 @@ do
         else
                 echo fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$chr"_alignedRef_phased.phase" already generated
         fi
+	exit
 
 
 done

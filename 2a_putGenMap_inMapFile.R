@@ -14,6 +14,7 @@ With
 
 parameters <- commandArgs(trailingOnly=T)
 
+print(paste(parameters,sep="\n"))
 if (length(parameters) == 8){
 	MANY_1 <- parameters[1]
 	if(MANY_1 == "F"){
@@ -109,7 +110,7 @@ for(chr in listCHR){
 		GenMapCHR<-GenMapGW
 	}else{
 
-		GenMapCHR<-read.table(paste(GenMapIn,chr,"_hg19.txt",sep=""),stringsAsFactors=F,header=T)[,c(1,column)]
+		GenMapCHR<-read.table(paste(GenMapIn,chr,"_combined_b37.txt",sep=""),stringsAsFactors=F,header=T)[,c(1,column)]
 		names(GenMapCHR)<-c("pos","cM")
 		print(paste(GenMapIn,chr,".txt has been read",sep=""))
 	}
