@@ -39,7 +39,7 @@ mkdir stage1
 cd stage1 
 if [ ! -e stage1.Combined ]
 then
-	for i in 22
+	for i in 22 18 10 7 3
 	do
 		if [ ! -s stage1.chr$i.EMprobs.out ]
 		then
@@ -60,7 +60,7 @@ then
 	done
 	exit
 	###average Ne and m across chromosomes and indviduals
-	Rscript 7b_averageStage1.R {22,15,10,4}
+	Rscript $folderScripts/3a_averageStage1.R {22,18,10,7,3}
 else
 	echo stage1.Combined already generated
 fi
@@ -79,10 +79,10 @@ then
 	do
 		if [ ! -s stage2.chr$i.regionsquaredchunkcounts.out ]
 		then
-			fs cp \
-				-g ../Infiles/SouthAmerica_dataset_QCed.KinshipFilter.AdmFilter.MAF0.0000001.GENO0.02.MIND0.05.chr$i"_alignedRef_phased.phase" \
+			$commandFs cp \
+				-g ../Infiles/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$i"_alignedRef_phased.phase" \
 				-r ../Infiles/chr$i.recomb \
-				-t ../Infiles/SouthAmerica_dataset_QCed.KinshipFilter.AdmFilter.MAF0.0000001.GENO0.02.MIND0.05.ids \
+				-t ../Infiles/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.ids \
 				-a 0 0 \
 				-k 50 \
 				-M $mu \
