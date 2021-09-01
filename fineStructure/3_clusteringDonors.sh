@@ -18,13 +18,14 @@ module load singularity
 module load java
 
 
-###Following exactly Ongaro et al. 2019. First cluster donor pops and then analyze Puerto Madryn
+###Following exactly Ongaro et al. 2019. First cluster donor pops and then analyze admixed individuals
+
 
 ###step1
 #estimated the mutation/emission and the switch rate parameters
 #with ten steps of the Expectation–Maximization (E–M) algorithm 
 #on a subset of chromosomes {4, 10, 15, 22}
-# using every individual except Puerto Madryn both as “donor” and “recipients.”
+# using every individual except admixed individuals (including Native amerfican with <0.95 of native american ancestry) both as “donor” and “recipients.”
 
 
 emStage1=10
@@ -38,14 +39,14 @@ mkdir stage1
 cd stage1 
 if [ ! -e stage1.Combined ]
 then
-	for i in 1
+	for i in 22
 	do
 		if [ ! -s stage1.chr$i.EMprobs.out ]
 		then
 			$commandFs cp \
 				-g $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$i"_alignedRef_phased.phase" \
 				-r $folder/fineStructure/Inputs/chr$i.recomb \
-				-t $folder/fineStructure/Inputs/STEP1_Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.ids \
+				-t $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05_STEP1.ids \
 				-i $emStage1 \
 				-a 0 0 \
 				-im \
