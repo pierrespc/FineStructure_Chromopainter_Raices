@@ -88,6 +88,7 @@ else
 fi
 for chr in {1..22}
 do
+	continue
 	echo $chr
 	echo "start.pos recom.rate.perbp" > fineStructure/Inputs/chr$chr.recomb
 	awk 'BEGIN{prevCM=0;prevBP=0} {rate=($3-prevCM)/($4-prevBP); print $4,rate; prevCM=$3; prevBP=$4}' shapeITphased/withCM.Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$chr$suff.bim >> fineStructure/Inputs/chr$chr.recomb
@@ -99,20 +100,27 @@ do
         else
                 echo fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$chr"_alignedRef_phased.phase" already generated
         fi
-	exit
 
 
 done
 
-awk '{if(NR>2)print $2,$1,1}' shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr22_alignedRef_phased.sample > fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.ids 
 
-test=$(awk '{print $2}' fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.ids | uniq | wc -l)
-test2=$(awk '{print $2}' fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.ids | sort | uniq | wc -l)
+####we have two steps in the analyze:
+##step 1 clustering donors (everything except Puerto Madryn)
+##step 2 painting Puerto Madryn individuals
+
+awk '{if(NR>2){if($1 == "PuertoMadryn"){include=0}else{include=1};print $2,$1,include}}' shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr22_alignedRef_phased.sample > fineStructure/Inputs/STEP1_Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.ids 
+awk '{if(NR>2){print $2,$1,1}}' shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr22_alignedRef_phased.sample > fineStructure/Inputs/STEP2_Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.ids
+
+
+test=$(awk '{print $2}' fineStructure/Inputs/STEP1_Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.ids | uniq | wc -l)
+test2=$(awk '{print $2}' fineStructure/Inputs/STEP1_Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.ids | sort | uniq | wc -l)
 if [ $test != $test2 ]
 then
 	echo "your .phase file must be orderd by individuals... need to fix this"
 	exit
 fi
-awk '{print $2}' fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.ids | uniq -c | awk '{print $2,$1}' > fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.initialDonorList
+
+awk '{if($3==1){print $2}}' fineStructure/Inputs/STEP1_Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.ids | uniq -c | awk '{print $2,$1}' > fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.initialDonorList
 
 
