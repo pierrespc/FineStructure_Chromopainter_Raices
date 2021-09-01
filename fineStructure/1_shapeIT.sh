@@ -16,7 +16,7 @@ module load java
 
 rootRef=/pasteur/zeus/projets/p02/Hotpaleo/common_data/db/ref_datasets/Human/1000GP_Phase3/
 
-folderScripts=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Scripts/RAICES/
+folderScripts=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Scripts/RAICES/fineStructure/
 folder=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Projects/RAICES/
 folderIN=$folder/StartFilteredData/
 

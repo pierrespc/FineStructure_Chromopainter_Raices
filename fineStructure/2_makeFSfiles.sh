@@ -6,7 +6,7 @@ SinguExec="singularity exec --home $HOME:/home/$USER --bind /pasteur "
 folderImg=/pasteur/zeus/projets/p02/Hotpaleo/common_data/VMs/singularity/
 fsImage=$folderImg/evolbioinfo-finestructure-v4.1.1.img
 
-folderScripts=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Scripts/RAICES/
+folderScripts=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Scripts/RAICES/fineStructure/
 
 #commandConvert="$SinguExec $fsImage perl impute2chromopainter.pl"
 commandConvert="perl $folderScripts/2b_impute2chromopainter.pl"
@@ -88,7 +88,6 @@ else
 fi
 for chr in {1..22}
 do
-	continue
 	echo $chr
 	echo "start.pos recom.rate.perbp" > fineStructure/Inputs/chr$chr.recomb
 	awk 'BEGIN{prevCM=0;prevBP=0} {rate=($3-prevCM)/($4-prevBP); print $4,rate; prevCM=$3; prevBP=$4}' shapeITphased/withCM.Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$chr$suff.bim >> fineStructure/Inputs/chr$chr.recomb
