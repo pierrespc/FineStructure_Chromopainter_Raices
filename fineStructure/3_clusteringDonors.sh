@@ -18,7 +18,7 @@ module load singularity
 module load java
 
 
-###Following exactly Ongaro et al. 2019. First cluster donor pops and then analyze admixed individuals
+###Following: Ongaro et al. 2019. First cluster donor pops and then analyze admixed individuals as recipients.
 
 
 ###step1
@@ -46,14 +46,14 @@ then
 			$commandFs cp \
 				-g $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$i"_alignedRef_phased.phase" \
 				-r $folder/fineStructure/Inputs/chr$i.recomb \
-				-t $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05_STEP1.ids \
+				-t $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05_STEP1.subSet.ids \
 				-i $emStage1 \
 				-a 0 0 \
-				-im \
+				-iM \
 				-in \
-				-o stage1.chr$i 
+				-o stage1.chr$i > stage1.chr$i.LOG
+				#-s $nR
 				#--emfilesonly \
-				#-s $NR 
 		else
 			echo stage1.chr$i already generated
 		fi

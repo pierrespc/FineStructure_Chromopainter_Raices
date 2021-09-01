@@ -81,3 +81,24 @@ if(sum(ids$V3==0)!=length(recipients) | sum(ids$V3==1)!=length(donors) | sum(is.
 write.table(ids,paste(prefOut,"_STEP1.ids",sep=""),col.names=F,row.names=F,sep="\t",quote=F)
 write.table(ids[ids$V3==1,1],paste(prefOut,".initialDonorList",sep=""),col.names=F,row.names=F,sep="\t",quote=F)
 
+table<-table(ids$V2[ids$V3==1])
+propsTab<-data.frame(cbind(names(table),table/sum(table)))
+donorsSubSet=sample(donors,600)
+ids$V3<-0
+ids$V3[ ids$V1 %in% donorsSubSet]<-1
+write.table(ids,paste(prefOut,"_STEP1.subSet.ids",sep=""),col.names=F,row.names=F,sep="\t",quote=F)
+write.table(ids[ids$V3==1,1],paste(prefOut,".subSet.initialDonorList",sep=""),col.names=F,row.names=F,sep="\t",quote=F)
+table<-table(ids$V2[ids$V3==1])
+temp<-data.frame(cbind(names(table),table/sum(table)))
+propsTab<-merge(propsTab,temp,by=names(propsTab)[1],all=T)
+propsTab[is.na(propsTab[,3]),3]<-0
+print("correlation of sample size in full vs subset donor list")
+cor=cor.test(as.numeric(propsTab[,2]),as.numeric(propsTab[,3]),method="spearman")
+print(cor)
+pdf(paste(prefOut,".subSet.initialDonorList.pdf",sep=""))
+plot(as.numeric(propsTab[,2]),as.numeric(propsTab[,3]),
+	xlab="Proportion of donors per population. Full set",
+	ylab="Proportion of donors per population. Sub set",
+	main=paste("Rho = ",round(cor$estimate,digits=4)))
+dev.off()
+
