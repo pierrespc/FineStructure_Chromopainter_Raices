@@ -8,8 +8,8 @@ fsImage=$folderImg/evolbioinfo-finestructure-v4.1.1.img
 
 folderScripts=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Scripts/RAICES/fineStructure/
 
-#commandConvert="$SinguExec $fsImage perl impute2chromopainter.pl"
-commandConvert="perl $folderScripts/2b_impute2chromopainter.pl"
+commandConvert="$SinguExec $fsImage impute2chromopainter.pl"
+#commandConvert="perl $folderScripts/2b_impute2chromopainter.pl"
 commandFs="$SinguExec $fsImage fs"
 module load singularity
 module load java

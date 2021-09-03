@@ -1,8 +1,13 @@
 #!/bin/Rscript
 
 
-listCHROM<-commandArgs(trailingOnly = T)
-setwd("~/Documents/PostDoc/DetoxFly/Gnecchio/Reformate/Outputs/fineStructureOnlyNat/fineStructure/")
+params<-commandArgs(trailingOnly=T)
+prefPhase=params[1]
+
+listCHROM<-params[-1]
+
+print(listCHROM)
+print(prefPhase)
 
 
 Ne<-c()
@@ -29,7 +34,7 @@ for(chr in listCHROM){
   }
   Ne<-cbind(Ne,as.numeric(em[wh+numem,4]))
   mu<-cbind(mu,as.numeric(em[wh+numem,5]))
-  system(paste("sed -n 2p SouthAmerica_dataset_QCed.KinshipFilter.AdmFilter.MAF0.0000001.GENO0.02.MIND0.05.chr",chr,"_alignedRef_phased.phase > chr",chr,".N",sep=""))
+  system(paste("sed -n 2p ",prefPhase,chr,"_alignedRef_phased.phase > chr",chr,".N",sep=""))
   wei<-c(wei,read.table(paste("chr",chr,".N",sep=""),header=F,stringsAsFactors = F)[1,1])
 }
 
