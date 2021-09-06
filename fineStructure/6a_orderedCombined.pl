@@ -1,9 +1,14 @@
-#!/bin/Rscript
+#!/bin/perl
 
-params<-commandArgs(trailingOnly)
-if(length(params)!=4){
-	stop()
-}
+
+use strict;
+use warnings;
+my $usage="<pref>?\n";
+
+my $pref=shof or die $usage;
+
+
+foreach suf in 
 folder=params[1]
 chr=params[2]
 step=as.numeric(params[3])
