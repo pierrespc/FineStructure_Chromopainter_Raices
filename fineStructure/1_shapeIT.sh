@@ -42,15 +42,15 @@ effSize=15000
 ########
 
 
-#for chr in 22
+#for chr in 2
 for chr in {1..22}
 do
-	if [ ! -s $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr"_alignedRef_phased.haps" ]
+	if [ ! -s $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr"_alignedRef_phased.haps" ]
 	then
-		$commandPlink --bfile $folderIN/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED --chr $chr --maf $MAF --geno $GENO --mind $MIND --make-bed --out $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr
-		perl $folderScripts/1_runShapeIT.pl $folder/shapeITphased Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr $MIND $GENO $MAF $rootRef/genetic_map_chr$chr"_combined_b37.txt" $rootRef/1000GP_Phase3_chr$chr".hap.gz" $rootRef/1000GP_Phase3_chr$chr".legend.gz" $rootRef/1000GP_Phase3.sample $folder/shapeITphased $state $window $thread $burn $prune $main $effSize "$commandPlink" "$commandShapeit" $folderScripts
+		shapeCHR=$(sbatch -J shape.$chr -o shape.chr$chr.o -e shape.chr$chr.e --mem=8G \
+				--wrap "$commandPlink --bfile $folderIN/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered --chr $chr --maf $MAF --geno $GENO --mind $MIND --make-bed --out $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr; perl $folderScripts/1_runShapeIT.pl $folder/shapeITphased Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr $MIND $GENO $MAF $rootRef/genetic_map_chr$chr\"_combined_b37.txt\" $rootRef/1000GP_Phase3_chr$chr\".hap.gz\" $rootRef/1000GP_Phase3_chr$chr\".legend.gz\" $rootRef/1000GP_Phase3.sample $folder/shapeITphased $state $window $thread $burn $prune $main $effSize \"$commandPlink\" \"$commandShapeit\" $folderScripts")
 	else
-		echo $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr"_alignedRef_phased.haps" already generated
+		echo $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr"_alignedRef_phased.haps" already generated
 	fi
 done
 
