@@ -57,7 +57,8 @@ cd stage2
 step=20
 if [ ! -e output.chunkcounts.out ]
 then
-	for i in {20..1}
+	for i in 21
+	#for i in {22..1}
 	do
 		totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$i"_STEP1.ids" | wc -l)
 		if [ ! -s stage2.chr$i.regionsquaredchunkcounts.out ]
@@ -74,7 +75,7 @@ then
 					ind2=$totalInds
 				fi			
 				
-				if [ ! -s stage2.chr$i.paral/_cut$count.regionsquaredchunkcounts.out ]
+				if [ ! -s stage2.chr$i.paral/$ind1.$ind2.regionsquaredchunkcounts.out ]
 				then
 					jobS2paral=$(sbatch -J S2.$i.$ind1.$ind2 -o stage2.chr$i.paral/logs/$ind1.$ind2.o -e stage2.chr$i.paral/logs/$ind1.$ind2.e --mem=4G \
 						--wrap "$commandFs cp \

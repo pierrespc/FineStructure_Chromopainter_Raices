@@ -32,7 +32,6 @@ module load java
 
 
 ###for parallelization of stage1 and stage2
-totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05_STEP1.ids | wc -l)
 step=20
 
 
@@ -48,18 +47,22 @@ cd $folder/fineStructure/Outputs/stage2/
 
 if [ ! -e output.chunkcounts.out ]
 then
+	#for i in 22
 	for i in {22..1}
 	do
+		  totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$i"_STEP1.ids" | wc -l)
+
 		if [ ! -s stage2.chr$i.regionsquaredchunkcounts.out ]
 		then
-			mkdir stage2.chr$i.paral/
-			mkdir stage2.chr$i.paral/logs/
 			ind1=1
 			ind2=$step
 			count=1
 			while [ $ind1 -le $totalInds ]
 			do
-			
+				if [ $ind2 -gt $totalInds ]
+				then
+					ind2=$totalInds
+				fi
 				
 				if [ ! -s stage2.chr$i.paral/$ind1.$ind2.regionsquaredchunkcounts.out ]
 				then
@@ -71,13 +74,14 @@ then
 				let ' count = count + 1 '
 				
 			done
+			jobS2comb=$(sbatch -J S2comb.$i -o chr$i.comb.o -e chr$i.comb.e --mem=4G \
+                                         --wrap "$commandCombine -d stage2.chr$i.paral/ -o stage2.chr$i")
 		else
 			echo stage2.chr$i already generated
 		fi
-		$commandCombine -d stage2.chr$i.paral/ -o stage2.chr$i
-		exit
 	done
-	/Users/pierrespc/Documents/PostDoc/scripts/Tools/chromopainter_mac/chromocombine  -l -m stage2.chr{1..22}
+	jobS2combALL=$(sbatch -J S2comb.ALL -o ALL.comb.o -e ALL.comb.e --mem=4G \
+                                          --wrap "$commandCombine -l -m stage2.chr{1..22}")
 else
 	echo output.chunkcounts.out already generated
 fi
