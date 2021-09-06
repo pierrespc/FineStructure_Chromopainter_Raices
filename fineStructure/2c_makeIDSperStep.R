@@ -40,12 +40,16 @@ native<-names(native)[apply(native,2,condition)]
 #	- -all Native american with Native American specific ancestry <=0.95
 
 IND<-read.table(PerInd,sep="\t",header=T,stringsAsFactors=F)
-
 if(length(native)==1){
 	IND$Native<-IND[,native]
 }else{
 	IND$Native=apply(IND[,native],1,sum)
 }
+
+
+
+ids<-read.table(allIDS,stringsAsFactors=F,header=F)
+IND=IND[ IND$Ind %in% ids$V1,]
 
 recipients<-IND$Ind[ IND$Region %in% c("Argentina","Admixed American","AfroAmerican")]
 recipients<-c(recipients, IND$Ind[(IND$Native<=0.95 & grepl("Native",IND$Region))])
@@ -57,24 +61,26 @@ print(table(IND$Region[IND$Ind %in% recipients]))
 print(paste("regions of donors (N=",length(donors),")",sep=""))
 print(table(IND$Region[IND$Ind %in% donors]))
 if(sum(! IND$Ind %in% c(recipients,donors))>0){
-	print("regions of unsassigned inds")
-	print(table(IND$Region[! IND$Ind %in% c(recipients,donors)]))
-	stop()
-}
-
+         print("regions of unsassigned inds")
+         print(table(IND$Region[! IND$Ind %in% c(recipients,donors)]))
+         stop()
+}       
+ 
 if(sum(IND$Ind %in% recipients & IND$Ind %in% donors)>0){
-	print("individuals as donor and recipiens")
-	print(IND[ IND$Ind %in% recipients & IND$Ind %in% donors,])
-	stop()
-}	
+         print("individuals as donor and recipiens")
+         print(IND[ IND$Ind %in% recipients & IND$Ind %in% donors,])
+         stop()
+}       
 
-ids<-read.table(allIDS,stringsAsFactors=F,header=F)
 ids$V3=NA
 ids$V3[ ids$V1 %in% recipients]<-0
 ids$V3[ ids$V1 %in% donors]<-1
 
 ###checks
 if(sum(ids$V3==0)!=length(recipients) | sum(ids$V3==1)!=length(donors) | sum(is.na(ids$V3))>0){
+	print(paste(sum(ids$V3==0),"vs",length(recipients)))
+	print(paste(sum(ids$V3==1),"vs",length(donors)))
+	print(sum(is.na(ids$V3)))
 	stop("issues")
 }
 

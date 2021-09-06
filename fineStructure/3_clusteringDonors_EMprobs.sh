@@ -28,7 +28,7 @@ module load java
 #with ten steps of the Expectation–Maximization (E–M) algorithm 
 #on a subset of chromosomes {4, 10, 15, 22}
 #Using any individual except admixed individuals (including Native amerfican with <0.95 of native american ancestry) both as “donor” and “recipients.”
-# For computation reason we randomly selected a subset of 600 donors for stage1
+# At the end, we did not did this: for computation reason we randomly selected a subset of 600 donors for stage1. We did on the whole set of individuals
 
 
 emStage1=10
@@ -38,7 +38,6 @@ cd $folder/fineStructure/Outputs/
 
 
 ###for parallelization of stage1 and stage2
-totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05_STEP1.ids | wc -l)
 step=20
 
 
@@ -51,6 +50,7 @@ if [ ! -e stage1.Combined ]
 then
 	for i in 3 7 10 18 22
 	do
+		totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$i"_STEP1.ids" | wc -l)
 		if [ ! -s stage1.chr$i.EMprobs.out ]
 		then
 			 mkdir stage1.chr$i.paral/
@@ -71,7 +71,7 @@ then
 						--wrap "$commandFs cp \
                                                 -g $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$i\"_alignedRef_phased.phase\" \
                                                 -r $folder/fineStructure/Inputs/chr$i.recomb \
-                                                -t $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05_STEP1.ids \
+                                                -t $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$i\"_STEP1.ids\" \
                                                 -a $ind1 $ind2 \
 						-i $emStage1 \
 						-iM \

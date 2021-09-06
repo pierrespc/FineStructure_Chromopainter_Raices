@@ -22,6 +22,8 @@ for(chr in listCHROM){
     listIndsCHECK=listInds
   }else{
     if(length(listInds)!=length(listIndsCHECK)){
+	print(length(listInds))
+	print(length(listIndsCHECK))
       stop("pb inds across chr")
     }
     if(sum(listInds==listIndsCHECK)!=length(listIndsCHECK)){

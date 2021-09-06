@@ -54,12 +54,12 @@ cd ..
 mkdir stage2
 cd stage2
 
-totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05_STEP1.ids | wc -l)
 step=20
 if [ ! -e output.chunkcounts.out ]
 then
-	for i in {22..1}
+	for i in {20..1}
 	do
+		totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$i"_STEP1.ids" | wc -l)
 		if [ ! -s stage2.chr$i.regionsquaredchunkcounts.out ]
 		then
 			mkdir stage2.chr$i.paral/
@@ -80,7 +80,7 @@ then
 						--wrap "$commandFs cp \
 							-g $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$i\"_alignedRef_phased.phase\" \
 							-r $folder/fineStructure/Inputs/chr$i.recomb \
-							-t $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05_STEP1.ids \
+							-t $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$i\"_STEP1.ids\" \
 							-a $ind1 $ind2 \
 							-k 100 \
 							-M $mu \
@@ -90,15 +90,11 @@ then
 				let ' ind1 = ind1 + step '
 				let ' ind2 = ind2 + step '
 				let ' count = count + 1 '
-				
 			done
 		else
 			echo stage2.chr$i already generated
 		fi
-		$commandCombine -d stage2.chr$i.paral/ -o stage2.chr$i
-		exit
 	done
-	/Users/pierrespc/Documents/PostDoc/scripts/Tools/chromopainter_mac/chromocombine  -l -m stage2.chr{1..22}
 else
 	echo output.chunkcounts.out already generated
 fi

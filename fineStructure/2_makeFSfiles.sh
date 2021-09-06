@@ -112,6 +112,16 @@ done
 
 awk '{if(NR>2){print $2,$1,1}}' shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr22_alignedRef_phased.sample > fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05_ALL.ids
 
+
+###poor trick because soem phased files removed one individual. don't want to rephase everything fot his
+
 Rscript $folderScripts/2c_makeIDSperStep.R fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05_ALL.ids Admixture/BestRUNperK/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.pruned.8.MeanByGroup.txt Admixture/BestRUNperK/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.pruned.8.AncestryComponentByIndividual.txt fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05
 
+ ###poor trick because soem phased files removed one Puerto Madryn individual (no problem for first steps of chromopainter because only for donors.
+###I'll see how I can handle this for subsequent steps
 
+for chr in {22..1}
+do
+	awk '{if(NR>2){print $2,$1,1}}' shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$chr"_alignedRef_phased.sample" > fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$chr"_ALL.ids"
+	Rscript $folderScripts/2c_makeIDSperStep.R fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$chr"_ALL.ids" Admixture/BestRUNperK/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.pruned.8.MeanByGroup.txt Admixture/BestRUNperK/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.pruned.8.AncestryComponentByIndividual.txt fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$chr
+done

@@ -61,18 +61,10 @@ then
 			do
 			
 				
-				if [ ! -s stage2.chr$i.paral/_cut$count.regionsquaredchunkcounts.out ]
+				if [ ! -s stage2.chr$i.paral/$ind1.$ind2.regionsquaredchunkcounts.out ]
 				then
-					jobS2paral=$(sbatch -J S2.$i.$ind1.$ind2 -o stage2.chr$i.paral/logs/$ind1.$ind2.o -e stage2.chr$i.paral/logs/$ind1.$ind2.e --mem=4G \
-						--wrap "$commandFs cp \
-							-g $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05.chr$i\"_alignedRef_phased.phase\" \
-							-r $folder/fineStructure/Inputs/chr$i.recomb \
-							-t $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.MAF0.0000001.GENO0.02.MIND0.05_STEP1.ids \
-							-a $ind1 $ind2 \
-							-k 100 \
-							-M $mu \
-							-n $Ne \
-							-o stage2.chr$i.paral/$ind1.$ind2")
+					echo  stage2.chr$i.paral/$ind1.$ind2.regionsquaredchunkcounts.out does not exit!
+					exit 
 				fi
 				let ' ind1 = ind1 + step '
 				let ' ind2 = ind2 + step '
