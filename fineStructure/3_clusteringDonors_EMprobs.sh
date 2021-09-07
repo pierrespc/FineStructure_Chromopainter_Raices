@@ -39,10 +39,10 @@ cd $folder/fineStructure/Outputs/
 
 ###for parallelization of stage1 and stage2
 step=20
+totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1_STEP1.ids | wc -l)
 
 
-
-#nR=$(cat $folder/fineStructure//Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO0.02.MIND0.05.initialDonorList | wc -l)
+#nR=$(cat $folder/fineStructure//Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.initialDonorList | wc -l)
 #echo $nR
 mkdir stage1
 cd stage1 
@@ -50,7 +50,6 @@ if [ ! -e stage1.Combined ]
 then
 	for i in 3 7 10 18 22
 	do
-		totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO0.02.MIND0.05.chr$i"_STEP1.ids" | wc -l)
 		if [ ! -s stage1.chr$i.EMprobs.out ]
 		then
 			 mkdir stage1.chr$i.paral/
@@ -69,9 +68,9 @@ then
 					echo stage1.chr$i.paral/logs/$ind1.$ind2
                                          jobS1paral=$(sbatch -J S1.$i.$ind1.$ind2 -o stage1.chr$i.paral/logs/$ind1.$ind2.o -e stage1.chr$i.paral/logs/$ind1.$ind2.e --mem=4G \
 						--wrap "$commandFs cp \
-                                                -g $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO0.02.MIND0.05.chr$i\"_alignedRef_phased.phase\" \
+                                                -g $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$i\"_alignedRef_phased.phase\" \
                                                 -r $folder/fineStructure/Inputs/chr$i.recomb \
-                                                -t $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO0.02.MIND0.05.chr$i\"_STEP1.ids\" \
+                                                -t $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1_STEP1.ids \
                                                 -a $ind1 $ind2 \
 						-i $emStage1 \
 						-iM \

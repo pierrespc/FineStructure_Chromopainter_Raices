@@ -33,7 +33,7 @@ module load java
 
 ###for parallelization of stage1 and stage2
 step=20
-
+totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1_STEP1.ids | wc -l)
 
 cd $folder/fineStructure/Outputs/stage2/
 
@@ -50,7 +50,6 @@ then
 	#for i in 22
 	for i in {22..1}
 	do
-		  totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO0.02.MIND0.05.chr$i"_STEP1.ids" | wc -l)
 
 		if [ ! -s stage2.chr$i.regionsquaredchunkcounts.out ]
 		then

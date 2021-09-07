@@ -32,7 +32,7 @@ module load java
 
 
 ###for parallelization of stage1 and stage2
-totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO0.02.MIND0.05_STEP1.ids | wc -l)
+totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1_STEP1.ids | wc -l)
 step=20
 
 
@@ -55,12 +55,12 @@ mkdir stage2
 cd stage2
 
 step=20
+totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1_STEP1.ids | wc -l)
 if [ ! -e output.chunkcounts.out ]
 then
 	for i in 21
 	#for i in {22..1}
 	do
-		totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO0.02.MIND0.05.chr$i"_STEP1.ids" | wc -l)
 		if [ ! -s stage2.chr$i.regionsquaredchunkcounts.out ]
 		then
 			mkdir stage2.chr$i.paral/
@@ -79,9 +79,9 @@ then
 				then
 					jobS2paral=$(sbatch -J S2.$i.$ind1.$ind2 -o stage2.chr$i.paral/logs/$ind1.$ind2.o -e stage2.chr$i.paral/logs/$ind1.$ind2.e --mem=4G \
 						--wrap "$commandFs cp \
-							-g $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO0.02.MIND0.05.chr$i\"_alignedRef_phased.phase\" \
+							-g $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$i\"_alignedRef_phased.phase\" \
 							-r $folder/fineStructure/Inputs/chr$i.recomb \
-							-t $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO0.02.MIND0.05.chr$i\"_STEP1.ids\" \
+							-t $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1_STEP1.ids \
 							-a $ind1 $ind2 \
 							-k 100 \
 							-M $mu \

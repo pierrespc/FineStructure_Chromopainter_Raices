@@ -26,8 +26,8 @@ mkdir shapeITphased
 mkdir shapeITphased/Log
 cd $folder/shapeITphased/Log
 ###parameters for QC filtering in plink
-MIND=0.05
-GENO=0.02
+MIND=1
+GENO=1
 MAF=0.0000001
 ######
 
@@ -42,8 +42,8 @@ effSize=15000
 ########
 
 
-#for chr in 2
-for chr in {1..22}
+#for chr in 22
+for chr in {1..21}
 do
 	if [ ! -s $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF$MAF.GENO$GENO.MIND$MIND.chr$chr"_alignedRef_phased.haps" ]
 	then
