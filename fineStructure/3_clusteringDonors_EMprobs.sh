@@ -45,10 +45,12 @@ totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Rai
 #nR=$(cat $folder/fineStructure//Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.initialDonorList | wc -l)
 #echo $nR
 mkdir stage1
-cd stage1 
+cd stage1
+count=0 
 if [ ! -e stage1.Combined ]
 then
-	for i in 3 7 10 18 22
+	#for i in 3 7 10 18 22
+	for i in 3
 	do
 		if [ ! -s stage1.chr$i.EMprobs.out ]
 		then
@@ -56,7 +58,6 @@ then
                          mkdir stage1.chr$i.paral/logs/
                          ind1=1
                          ind2=$step
-                         count=1
                          while [ $ind1 -le $totalInds ]
                          do
 				if [ $ind2 -gt $totalInds ]
@@ -66,7 +67,7 @@ then
 				if [ ! -s stage1.chr$i.paral/$ind1.$ind2.EMprobs.out ]
 	                        then
 					echo stage1.chr$i.paral/logs/$ind1.$ind2
-                                         jobS1paral=$(sbatch -J S1.$i.$ind1.$ind2 -o stage1.chr$i.paral/logs/$ind1.$ind2.o -e stage1.chr$i.paral/logs/$ind1.$ind2.e --mem=4G \
+                                        jobS1paral=$(sbatch -J S1.$i.$ind1.$ind2 -o stage1.chr$i.paral/logs/$ind1.$ind2.o -e stage1.chr$i.paral/logs/$ind1.$ind2.e --mem=4G --time=12:00:00 --cpus-per-task=3 \
 						--wrap "$commandFs cp \
                                                 -g $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$i\"_alignedRef_phased.phase\" \
                                                 -r $folder/fineStructure/Inputs/chr$i.recomb \
@@ -87,7 +88,7 @@ then
 			echo stage1.chr$i already generated
 		fi
 	done
-	exit
+	echo $count
 else
 	echo stage1.Combined already generated
 fi

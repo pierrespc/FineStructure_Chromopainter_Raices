@@ -27,39 +27,32 @@ mkdir fineStructure/Inputs/
 
 a=$(ls  shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr{1..22}_alignedRef.bim | wc -l)
 echo $a
-if [ $a -ne 22 ]
+if [ $a -lt 22 ]
 then
 	echo "not 22 chr with alignedRef"
-	a=$(ls  shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr{1..22}.bim | wc -l)
-	if [ $a -eq 22 ]
+	answer="?"
+	while [ $answer != "y" ] && [ $answer != "n" ]
+	do 
+		echo "copy $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr<CHR>.bim to $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr<CHR>_alignedRef.bim????"
+		echo "type y/n"
+		read answer
+	done
+	if [ $answer == "n" ]
 	then
-		suff=""
+		echo "well fix this then"
+		exit
 	else
-		echo "not enough *bim files in $folder/shapeITphased/"
-		answer="?"
-		while [ $answer != "y" ] && [ $answer != "n" ]
-		do 
-			echo "copy $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr<CHR>.bim to $folder/shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr<CHR>_alignedRef.bim????"
-			echo "type y/n"
-			read answer
+		suff="_alignedRef"
+		for chr in {1..22}
+		do
+			if [ ! -e shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$chr"_alignedRef.bim" ]
+			then
+				echo coyping for chr$chr
+				cp shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$chr.bim shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$chr"_alignedRef.bim"
+			else
+				echo already there for chr$chr
+			fi
 		done
-		if [ $answer == "n" ]
-		then
-			echo "well fix this then"
-			exit
-		else
-			suff="_alignedRef"
-			for chr in {1..22}
-			do
-				if [ ! -e shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$chr"_alignedRef.bim" ]
-				then
-					echo coyping for chr$chr
-					cp shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$chr.bim shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$chr"_alignedRef.bim"
-				else
-					echo already there for chr$chr
-				fi
-			done
-		fi
 	fi
 else
 	suff="_alignedRef"
@@ -114,7 +107,7 @@ awk '{if(NR>2){print $2,$1,1}}' shapeITphased/Genotipos_Raices.Plink.Autosomal.H
 
 
 
-Rscript $folderScripts/2c_makeIDSperStep.R fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1_ALL.ids Admixture/BestRUNperK/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.Filtered.pruned.8.MeanByGroup.txt Admixture/BestRUNperK/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.Filtered.pruned.8.AncestryComponentByIndividual.txt fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1
+Rscript $folderScripts/2c_makeIDSperStep.R fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1_ALL.ids Admixture/BestRUNperK/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.pruned.8.MeanByGroup.txt Admixture/BestRUNperK/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.pruned.8.AncestryComponentByIndividual.txt fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1
 
  ###poor trick because soem phased files removed one Puerto Madryn individual (no problem for first steps of chromopainter because only for donors.
 ###I'll see how I can handle this for subsequent steps
@@ -122,5 +115,5 @@ Rscript $folderScripts/2c_makeIDSperStep.R fineStructure/Inputs/Genotipos_Raices
 #for chr in {22..1}
 #do
 #	awk '{if(NR>2){print $2,$1,1}}' shapeITphased/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$chr"_alignedRef_phased.sample" > fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$chr"_ALL.ids"
-#	Rscript $folderScripts/2c_makeIDSperStep.R fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$chr"_ALL.ids" Admixture/BestRUNperK/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.Filtered.pruned.8.MeanByGroup.txt Admixture/BestRUNperK/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.Filtered.pruned.8.AncestryComponentByIndividual.txt fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$chr
+#	Rscript $folderScripts/2c_makeIDSperStep.R fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$chr"_ALL.ids" Admixture/BestRUNperK/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.pruned.8.MeanByGroup.txt Admixture/BestRUNperK/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.pruned.8.AncestryComponentByIndividual.txt fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$chr
 #done

@@ -14,66 +14,67 @@ folderScripts=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Scripts/RAICES/fineStruc
 commandConvert="$SinguExec $fsImage impute2chromopainter.pl"
 #commandConvert="perl $folderScripts/2b_impute2chromopainter.pl"
 commandFs="$SinguExec $fsImage fs"
+
+commandGreedy="$SinguExec $fsImage finestructuregreedy.sh" 
 commandCombine="$SinguExec $fsImage chromocombine"
 
 module load singularity
 module load java
 
 
-###Following: Ongaro et al. 2019. First cluster donor pops and then analyze admixed individuals as recipients.
+
+###Following: Gnecchi Ruscone 2019
 
 
-###stage1
-#estimated the mutation/emission and the switch rate parameters
-#with ten steps of the Expectation–Maximization (E–M) algorithm 
-#on a subset of chromosomes {4, 10, 15, 22}
-#Using any individual except admixed individuals (including Native amerfican with <0.95 of native american ancestry) both as “donor” and “recipients.”
-# For computation reason we randomly selected a subset of 600 donors for stage1
+###stage3: fineStructure
 
 
-
-cd $folder/fineStructure/Outputs/stage1/
-mu=$(awk '{if(NR==2)print $2}' stage1.Combined)
-Ne=$(awk '{if(NR==2)print $1}' stage1.Combined)
+cd $folder/fineStructure/Outputs/
 
 mkdir stage3
 cd stage3
 if [ ! -e stage3.mcmc.xml ]
 then
-	fs fs \
-		-m oMCMC \
-		-x 1000000 \
-		-y 2000000 \
-		-z 10000 \
-		../stage2/output.chunkcounts.out \
-		stage3.mcmc.xml
+	###x: 1e6 buirn in iter
+	###y: 2e6 number of itereations
+	###z: thinning every 1e4 iterations
+	jobS3_1=$(sbatch -J S3.1 -o S3.1.o -e S3.1.e --mem=8G --cpus-per-task=1 --qos=long \
+                       --wrap "$commandFs fs \
+				-x 1000000 \
+				-y 2000000 \
+				-z 10000 \
+				../stage2/output.chunkcounts.out \
+				stage3.mcmc.xml")
 else
 	echo stage3.mcmc.xml already generated
 fi
-#continue the previous run for 100K additional steps, treating the original run as burnin.
+
+#continue the previous run for 1M additional steps, treating the original run as burnin.
 if [ ! -e stage3.mcmc.longer.xml ]
 then
-	fs fs \
+	jobS3_2=$(sbatch -J S3.2 -o S3.2.o -e S3.2.e --mem=8G --cpus-per-task=1 --qos=long \
+		--wrap "$commandFs fs \
 		-x 0 \
-		-y 100000 \
+		-y 1000000 \
 		-z 10000 \
 		../stage2/output.chunkcounts.out \
 		stage3.mcmc.xml \
-		stage3.mcmc.longer.xml
+		stage3.mcmc.longer.xml")
                        
 else
 	echo stage3.mcmc.longer.xml already generated
 fi
-
-## Infers a tree, using the best state seen in out.mcmc.xml as the initial state.
+## Infers a tree, using the best state seen in out.mcmc.longer.xml as the initial state.
 if [ ! -e stage3.tree.xml ]
 then
-	fs fs \
+	jobS3_3=$(sbatch -J S3.3 -o S3.3.o -e S3.3.e --mem=8G --cpus-per-task=1 --qos=normal --time=06:00:00 \
+		--wrap "$commandFs fs \
 		-m T \
 		-x 0 \
+		-t 100000000 \
 		../stage2/output.chunkcounts.out \
 		stage3.mcmc.longer.xml \
-		stage3.tree.xml
+		stage3.tree.xml")
 else
 	echo stage3.tree.xml already generated
 fi
@@ -82,11 +83,13 @@ fi
 #Infers a tree, using (-T 1) the maximum concordance state over out.mcmc.xml as the initial state. This is reported with full likelihood ordering (-k 2), useful for cutting at a given number of ppulations K (but may look bad in the GUI).
 if [ ! -e stage3.tree.Other.xml ]
 then
-	fs fs \
+	jobS3_4=$(sbatch -J S3.4 -o S3.4.o -e S3.4.e --mem=8G --cpus-per-task=1 --qos=normal --time=06:00:00 \
+               --wrap "$commandFs fs \
 		-m T \
 		-k 2 \
 		-T 1 \
+		-t 100000000 \
 		../stage2/output.chunkcounts.out \
 		stage3.mcmc.longer.xml \
-		stage3.tree.Other.xml
+		stage3.tree.Other.xml")
 fi

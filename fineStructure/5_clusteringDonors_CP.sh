@@ -58,7 +58,7 @@ step=20
 totalInds=$(awk '{if($3==1)print $0}' $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1_STEP1.ids | wc -l)
 if [ ! -e output.chunkcounts.out ]
 then
-	for i in 21
+	for i in {21..1}
 	#for i in {22..1}
 	do
 		if [ ! -s stage2.chr$i.regionsquaredchunkcounts.out ]
@@ -77,7 +77,7 @@ then
 				
 				if [ ! -s stage2.chr$i.paral/$ind1.$ind2.regionsquaredchunkcounts.out ]
 				then
-					jobS2paral=$(sbatch -J S2.$i.$ind1.$ind2 -o stage2.chr$i.paral/logs/$ind1.$ind2.o -e stage2.chr$i.paral/logs/$ind1.$ind2.e --mem=4G \
+					jobS2paral=$(sbatch -J S2.$i.$ind1.$ind2 -o stage2.chr$i.paral/logs/$ind1.$ind2.o -e stage2.chr$i.paral/logs/$ind1.$ind2.e --mem=4G --cpus-per-task=3 --time=6:00:00 \
 						--wrap "$commandFs cp \
 							-g $folder/fineStructure/Inputs/Genotipos_Raices.Plink.Autosomal.HGDP_1KG_SGDP_REDUCED.Filtered.MAF0.0000001.GENO1.MIND1.chr$i\"_alignedRef_phased.phase\" \
 							-r $folder/fineStructure/Inputs/chr$i.recomb \

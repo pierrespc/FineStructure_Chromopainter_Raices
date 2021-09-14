@@ -47,8 +47,8 @@ cd $folder/fineStructure/Outputs/stage2/
 
 if [ ! -e output.chunkcounts.out ]
 then
-	#for i in 22
 	for i in {22..1}
+	#for i in {22..1}
 	do
 
 		if [ ! -s stage2.chr$i.regionsquaredchunkcounts.out ]
@@ -73,13 +73,13 @@ then
 				let ' count = count + 1 '
 				
 			done
-			jobS2comb=$(sbatch -J S2comb.$i -o chr$i.comb.o -e chr$i.comb.e --mem=4G \
+			jobS2comb=$(sbatch -J S2comb.$i -o chr$i.comb.o -e chr$i.comb.e --mem=4G --time=01:00:00 \
                                          --wrap "$commandCombine -d stage2.chr$i.paral/ -o stage2.chr$i")
 		else
 			echo stage2.chr$i already generated
 		fi
 	done
-	jobS2combALL=$(sbatch -J S2comb.ALL -o ALL.comb.o -e ALL.comb.e --mem=4G \
+	jobS2combALL=$(sbatch -J S2comb.ALL -o ALL.comb.o -e ALL.comb.e --mem=4G --time=01:00:00 \
                                           --wrap "$commandCombine -l -m stage2.chr{1..22}")
 else
 	echo output.chunkcounts.out already generated
