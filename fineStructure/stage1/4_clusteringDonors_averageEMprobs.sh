@@ -9,7 +9,7 @@ SinguExec="singularity exec --home $HOME:/home/$USER --bind /pasteur "
 folderImg=/pasteur/zeus/projets/p02/Hotpaleo/common_data/VMs/singularity/
 fsImage=$folderImg/evolbioinfo-finestructure-v4.1.1.img
 
-folderScripts=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Scripts/RAICES/fineStructure/
+folderScripts=/pasteur/zeus/projets/p02/Hotpaleo/pierre/Scripts/RAICES/fineStructure/stage1/
 
 commandConvert="$SinguExec $fsImage impute2chromopainter.pl"
 #commandConvert="perl $folderScripts/2b_impute2chromopainter.pl"
